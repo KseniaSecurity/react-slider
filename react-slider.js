@@ -133,6 +133,11 @@
       barClassName: PropTypes.string,
 
       /**
+       * The css class added to the other bar classes.
+       */
+      barClassAdditionalNames: PropTypes.array,
+
+      /**
        * If `true` the active handle will push other handles
        * within the constraints of `min`, `max`, `step` and `minDistance`.
        */
@@ -187,6 +192,7 @@
         handleClassName: 'handle',
         handleActiveClassName: 'active',
         barClassName: 'bar',
+        barClassAdditionalNames: [],
         withBars: false,
         pearling: false,
         disabled: false,
@@ -796,7 +802,7 @@
           ref: function (r) {
             self['bar' + i] = r;
           },
-          className: this.props.barClassName + ' ' + this.props.barClassName + '-' + i,
+          className: (this.props.barClassName + ' ' + this.props.barClassName + '-' + i + ' ' + this.props.barClassAdditionalNames[i] || '').trim(),
           style: this._buildBarStyle(offsetFrom, this.state.upperBound - offsetTo)
         })
       );
