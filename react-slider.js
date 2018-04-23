@@ -189,7 +189,12 @@
        * Callback called in case of click on one of the bar.
        * Receives the element representing the bar
        */
-      onBarClick: PropTypes.func
+      onBarClick: PropTypes.func,
+
+      /**
+       * A label displayed inside the component with class unit-of-measure
+       */
+      unitOfMeasure: PropTypes.string
     },
 
     getDefaultProps: function () {
@@ -902,6 +907,7 @@
             onMouseDown: this._onSliderMouseDown,
             onClick: this._onSliderClick
           },
+          [<div className="unit-of-measure">{this.props.unitOfMeasure}</div>],
           bars,
           handles
         )
