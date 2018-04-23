@@ -183,7 +183,13 @@
        *  Callback called when the the slider is clicked (handle or bars).
        *  Receives the value at the clicked position as argument.
        */
-      onSliderClick: PropTypes.func
+      onSliderClick: PropTypes.func,
+
+      /**
+       * Callback called in case of click on one of the bar.
+       * Receives the element representing the bar
+       */
+      onBarClick: PropTypes.func
     },
 
     getDefaultProps: function () {
@@ -204,7 +210,8 @@
         pearling: false,
         disabled: false,
         snapDragDisabled: false,
-        invert: false
+        invert: false,
+        onBarClick: () => {}
       };
     },
 
@@ -818,8 +825,9 @@
             self['bar' + i] = r;
           },
           className: (this.props.barClassName + ' ' + this.props.barClassName + '-' + i + ' ' + this.props.barAdditionalClasses[i] || '').trim(),
-          style: this._buildBarStyle(offsetFrom, this.state.upperBound - offsetTo)
-        })
+          style: this._buildBarStyle(offsetFrom, this.state.upperBound - offsetTo),
+          onClick: () => this.props.onBarClick(self['bar' + i], i)
+        }, [this.props.barIcons[i]])
       );
     },
 
