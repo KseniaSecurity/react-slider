@@ -77,6 +77,12 @@
       minDistance: PropTypes.number,
 
       /**
+       * The minimal distance between the lower / higher bounds and 
+       * min / max values given to the component
+       */
+      boundsDistance: PropTypes.number,
+
+      /**
        * Determines the initial positions of the handles and the number of handles if the component has no children.
        *
        * If a number is passed a slider with one handle will be rendered.
@@ -135,7 +141,7 @@
       /**
        * The css class added to the other bar classes.
        */
-      barClassAdditionalNames: PropTypes.array,
+      barAdditionalClasses: PropTypes.array,
 
       /**
        * If `true` the active handle will push other handles
@@ -192,7 +198,8 @@
         handleClassName: 'handle',
         handleActiveClassName: 'active',
         barClassName: 'bar',
-        barClassAdditionalNames: [],
+        barAdditionalClasses: [],
+        boundsDistance: 0,
         withBars: false,
         pearling: false,
         disabled: false,
@@ -264,7 +271,7 @@
           if (value.length !== count || defaultValue.length !== count) {
             console.warn(this.constructor.displayName + ": Number of values does not match number of children.");
           }
-          return linspace(this.props.min, this.props.max, count);
+          return linspace(this._min(), this._max(), count);
       }
     },
 
@@ -322,18 +329,18 @@
 
     // calculates the offset of a handle in pixels based on its value.
     _calcOffset: function (value) {
-      var range = this.props.max - this.props.min;
+      var range = this._max() - this._min();
       if (range === 0) {
         return 0;
       }
-      var ratio = (value - this.props.min) / range;
+      var ratio = (value - this._min()) / range;
       return ratio * this.state.upperBound;
     },
 
     // calculates the value corresponding to a given pixel offset, i.e. the inverse of `_calcOffset`.
     _calcValue: function (offset) {
       var ratio = offset / this.state.upperBound;
-      return ratio * (this.props.max - this.props.min) + this.props.min;
+      return ratio * (this._max() - this._min()) + this._min();
     },
 
     _buildHandleStyle: function (offset, i) {
@@ -567,9 +574,9 @@
           e.preventDefault();
           return this._moveUpOneStep();
         case "Home":
-          return this._move(this.props.min);
+          return this._move(this._min());
         case "End":
-          return this._move(this.props.max);
+          return this._move(this._max());
         default:
           return;
       }
@@ -578,17 +585,17 @@
     _moveUpOneStep: function () {
       var oldValue = this.state.value[this.state.index];
       var newValue = oldValue + this.props.step;
-      this._move(Math.min(newValue, this.props.max));
+      this._move(Math.min(newValue, this._max()));
     },
 
     _moveDownOneStep: function () {
       var oldValue = this.state.value[this.state.index];
       var newValue = oldValue - this.props.step;
-      this._move(Math.max(newValue, this.props.min));
+      this._move(Math.max(newValue, this._min()));
     },
 
     _getValueFromPosition: function (position) {
-      var diffValue = position / (this.state.sliderLength - this.state.handleSize) * (this.props.max - this.props.min);
+      var diffValue = position / (this.state.sliderLength - this.state.handleSize) * (this._max() - this._min());
       return this._trimAlignValue(this.state.startValue + diffValue);
     },
 
@@ -635,11 +642,11 @@
       if (props.pearling && length > 1) {
         if (newValue > oldValue) {
           this._pushSucceeding(value, minDistance, index);
-          this._trimSucceeding(length, value, minDistance, props.max);
+          this._trimSucceeding(length, value, minDistance, this._max());
         }
         else if (newValue < oldValue) {
           this._pushPreceding(value, minDistance, index);
-          this._trimPreceding(length, value, minDistance, props.min);
+          this._trimPreceding(length, value, minDistance, this._min());
         }
       }
 
@@ -723,8 +730,8 @@
     _trimValue: function (val, props) {
       props = props || this.props;
 
-      if (val <= props.min) val = props.min;
-      if (val >= props.max) val = props.max;
+      if (val <= this._min() + props.boundsDistance ) val = this._min() + props.boundsDistance;
+      if (val >= this._max() - props.boundsDistance ) val = this._max() - props.boundsDistance;
 
       return val;
     },
@@ -740,6 +747,14 @@
       }
 
       return parseFloat(alignValue.toFixed(5));
+    },
+
+    _max: function () {
+      return this.props.max + this.props.boundsDistance
+    },
+
+    _min: function () {
+      return this.props.min - this.props.boundsDistance
     },
 
     _renderHandle: function (style, child, i) {
@@ -762,8 +777,8 @@
             tabIndex: 0,
             role: "slider",
             "aria-valuenow": this.state.value[i],
-            "aria-valuemin": this.props.min,
-            "aria-valuemax": this.props.max,
+            "aria-valuemin": this._min(),
+            "aria-valuemax": this._max(),
             "aria-label": isArray(this.props.ariaLabel) ? this.props.ariaLabel[i] : this.props.ariaLabel,
             "aria-valuetext": this.props.ariaValuetext,
           },
@@ -802,7 +817,7 @@
           ref: function (r) {
             self['bar' + i] = r;
           },
-          className: (this.props.barClassName + ' ' + this.props.barClassName + '-' + i + ' ' + this.props.barClassAdditionalNames[i] || '').trim(),
+          className: (this.props.barClassName + ' ' + this.props.barClassName + '-' + i + ' ' + this.props.barAdditionalClasses[i] || '').trim(),
           style: this._buildBarStyle(offsetFrom, this.state.upperBound - offsetTo)
         })
       );

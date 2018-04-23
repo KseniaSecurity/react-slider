@@ -68,6 +68,11 @@ Must be greater than zero.
 The minimal distance between any pair of handles.
 Zero means they can sit on top of each other.
 
+##### boundsDistance {number} default: 0
+
+The distance left from the bounds. If greater than zero, a
+space will be added between the bounds and the lower / higher value.
+
 ##### defaultValue {oneOfType([number, arrayOf(number)])} default: 0
 
 Determines the initial positions of the handles and the number of handles if the component has no children.
@@ -108,6 +113,10 @@ If `true` bars between the handles will be rendered.
 The css class set on the bars between the handles.
 In addition bar fragment will receive a numbered css class of the form `${barClassName}-${i}`,
 e.g. `bar-0`, `bar-1`, ...
+
+##### barAdditionalClasses {string[]} default: []
+
+The css classes that should be added to every bar created.
 
 ##### pearling {bool} default: false
 
