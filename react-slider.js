@@ -892,13 +892,7 @@
 
     _renderUnitOfMeasure: function () {
       return React.createElement('div', {
-        ref: function (r) {
-          self.slider = r;
-        },
-        style: { position: 'relative' },
-        className: 'unit-of-measure',
-        onMouseDown: this._onSliderMouseDown,
-        onClick: this._onSliderClick
+        className: 'unit-of-measure'
       }, [this.props.unitOfMeasure])
     },
 
