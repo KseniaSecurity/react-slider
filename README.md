@@ -150,6 +150,11 @@ Callback called only after moving a handle has ended or when a new value is set 
 
 Callback called when the the slider is clicked (handle or bars). Receives the value at the clicked position as argument.
 
+##### onBarClick {func}
+
+Callback called when a bar is clicked.
+Receives the bar element and its index.
+
 ##### ariaLabel {oneOfType([string, arrayOf(string)])}
 
 aria-label for screen-readers to apply to the handles.
@@ -159,6 +164,16 @@ The length of the array must match the number of handles in the value array.
 ##### ariaValuetext {string}
 
 aria-valuetext for screen-readers
+
+##### unitOfMeasure {string}
+
+the unit of measure that will be displayed inside the component. 
+The element containing this value will have a class named 
+_unit-of-measure_
+
+##### barIcons {array}
+
+the icons to display with the bars
 
 ### Methods
 

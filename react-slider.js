@@ -1,10 +1,10 @@
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
-    define(['react','prop-types','create-react-class'], factory);
+    define(['react', 'prop-types', 'create-react-class'], factory);
   } else if (typeof exports === 'object') {
-    module.exports = factory(require('react'),require('prop-types'),require('create-react-class'));
+    module.exports = factory(require('react'), require('prop-types'), require('create-react-class'));
   } else {
-    root.ReactSlider = factory(root.React,root.PropTypes,root.createReactClass);
+    root.ReactSlider = factory(root.React, root.PropTypes, root.createReactClass);
   }
 }(this, function (React, PropTypes, createReactClass) {
 
@@ -42,7 +42,7 @@
     return x != null && x.length === 1 ? x[0] : x;
   }
 
-  var isArray = Array.isArray || function(x) {
+  var isArray = Array.isArray || function (x) {
     return Object.prototype.toString.call(x) === '[object Array]';
   };
 
@@ -187,14 +187,20 @@
 
       /**
        * Callback called in case of click on one of the bar.
-       * Receives the element representing the bar
+       * Receives the bar element and its index.
        */
       onBarClick: PropTypes.func,
 
       /**
        * A label displayed inside the component with class unit-of-measure
        */
-      unitOfMeasure: PropTypes.string
+      unitOfMeasure: PropTypes.string,
+
+      /**
+       * An array containing the icon to display with the bar. The 
+       * selector to use in css to style the icon is .bar > element_type
+       */
+      barIcons: PropTypes.array
     },
 
     getDefaultProps: function () {
@@ -216,7 +222,9 @@
         disabled: false,
         snapDragDisabled: false,
         invert: false,
-        onBarClick: () => {}
+        onBarClick: () => { },
+        unitOfMeasure: '',
+        barIcons: []
       };
     },
 
@@ -321,7 +329,7 @@
 
     _handleResize: function () {
       // setTimeout of 0 gives element enough time to have assumed its new size if it is being resized
-      var resizeTimeout = window.setTimeout(function() {
+      var resizeTimeout = window.setTimeout(function () {
         // drop this timeout from pendingResizeTimeouts to reduce memory usage
         this.pendingResizeTimeouts.shift();
         this._resize();
@@ -331,7 +339,7 @@
     },
 
     // clear all pending timeouts to avoid error messages after unmounting
-    _clearPendingResizeTimeouts: function() {
+    _clearPendingResizeTimeouts: function () {
       do {
         var nextTimeout = this.pendingResizeTimeouts.shift();
 
@@ -415,7 +423,7 @@
         if (value[i + 1] - value[i] < this.props.minDistance) return;
       }
 
-      this.setState({value: value}, callback.bind(this, closestIndex));
+      this.setState({ value: value }, callback.bind(this, closestIndex));
     },
 
     _getMousePosition: function (e) {
@@ -540,7 +548,7 @@
 
     _onEnd: function (eventMap) {
       this._removeHandlers(eventMap);
-      this.setState({index: -1}, this._fireChangeEvent.bind(this, 'onAfterChange'));
+      this.setState({ index: -1 }, this._fireChangeEvent.bind(this, 'onAfterChange'));
     },
 
     _onMouseMove: function (e) {
@@ -562,7 +570,7 @@
       }
 
       if (this.isScrolling) {
-        this.setState({index: -1});
+        this.setState({ index: -1 });
         return;
       }
 
@@ -665,15 +673,15 @@
       // Normally you would use `shouldComponentUpdate`, but since the slider is a low-level component,
       // the extra complexity might be worth the extra performance.
       if (newValue !== oldValue) {
-        this.setState({value: value}, this._fireChangeEvent.bind(this, 'onChange'));
+        this.setState({ value: value }, this._fireChangeEvent.bind(this, 'onChange'));
       }
     },
 
     _pushSucceeding: function (value, minDistance, index) {
       var i, padding;
       for (i = index, padding = value[i] + minDistance;
-           value[i + 1] != null && padding > value[i + 1];
-           i++, padding = value[i] + minDistance) {
+        value[i + 1] != null && padding > value[i + 1];
+        i++ , padding = value[i] + minDistance) {
         value[i + 1] = this._alignValue(padding);
       }
     },
@@ -690,8 +698,8 @@
     _pushPreceding: function (value, minDistance, index) {
       var i, padding;
       for (i = index, padding = value[i] - minDistance;
-           value[i - 1] != null && padding < value[i - 1];
-           i--, padding = value[i] - minDistance) {
+        value[i - 1] != null && padding < value[i - 1];
+        i-- , padding = value[i] - minDistance) {
         value[i - 1] = this._alignValue(padding);
       }
     },
@@ -742,8 +750,8 @@
     _trimValue: function (val, props) {
       props = props || this.props;
 
-      if (val <= this._min() + props.boundsDistance ) val = this._min() + props.boundsDistance;
-      if (val >= this._max() - props.boundsDistance ) val = this._max() - props.boundsDistance;
+      if (val <= this._min() + props.boundsDistance) val = this._min() + props.boundsDistance;
+      if (val >= this._max() - props.boundsDistance) val = this._max() - props.boundsDistance;
 
       return val;
     },
@@ -777,23 +785,23 @@
 
       return (
         React.createElement('div', {
-            ref: function (r) {
-              self['handle' + i] = r;
-            },
-            key: 'handle' + i,
-            className: className,
-            style: style,
-            onMouseDown: this._createOnMouseDown(i),
-            onTouchStart: this._createOnTouchStart(i),
-            onFocus: this._createOnKeyDown(i),
-            tabIndex: 0,
-            role: "slider",
-            "aria-valuenow": this.state.value[i],
-            "aria-valuemin": this._min(),
-            "aria-valuemax": this._max(),
-            "aria-label": isArray(this.props.ariaLabel) ? this.props.ariaLabel[i] : this.props.ariaLabel,
-            "aria-valuetext": this.props.ariaValuetext,
+          ref: function (r) {
+            self['handle' + i] = r;
           },
+          key: 'handle' + i,
+          className: className,
+          style: style,
+          onMouseDown: this._createOnMouseDown(i),
+          onTouchStart: this._createOnTouchStart(i),
+          onFocus: this._createOnKeyDown(i),
+          tabIndex: 0,
+          role: "slider",
+          "aria-valuenow": this.state.value[i],
+          "aria-valuemin": this._min(),
+          "aria-valuemax": this._max(),
+          "aria-label": isArray(this.props.ariaLabel) ? this.props.ariaLabel[i] : this.props.ariaLabel,
+          "aria-valuetext": this.props.ariaValuetext,
+        },
           child
         )
       );
@@ -882,6 +890,18 @@
       }
     },
 
+    _renderUnitOfMeasure: function () {
+      return React.createElement('div', {
+        ref: function (r) {
+          self.slider = r;
+        },
+        style: { position: 'relative' },
+        className: 'unit-of-measure',
+        onMouseDown: this._onSliderMouseDown,
+        onClick: this._onSliderClick
+      }, [this.props.unitOfMeasure])
+    },
+
     render: function () {
       var self = this;
       var state = this.state;
@@ -899,15 +919,15 @@
 
       return (
         React.createElement('div', {
-            ref: function (r) {
-              self.slider = r;
-            },
-            style: {position: 'relative'},
-            className: props.className + (props.disabled ? ' disabled' : ''),
-            onMouseDown: this._onSliderMouseDown,
-            onClick: this._onSliderClick
+          ref: function (r) {
+            self.slider = r;
           },
-          [<div className="unit-of-measure">{this.props.unitOfMeasure}</div>],
+          style: { position: 'relative' },
+          className: props.className + (props.disabled ? ' disabled' : ''),
+          onMouseDown: this._onSliderMouseDown,
+          onClick: this._onSliderClick
+        },
+          [this._renderUnitOfMeasure()],
           bars,
           handles
         )
