@@ -222,7 +222,7 @@
         disabled: false,
         snapDragDisabled: false,
         invert: false,
-        onBarClick: function() {},
+        onBarClick: function () { },
         unitOfMeasure: '',
         barIcons: []
       };
@@ -839,7 +839,7 @@
           },
           className: (this.props.barClassName + ' ' + this.props.barClassName + '-' + i + ' ' + this.props.barAdditionalClasses[i] || '').trim(),
           style: this._buildBarStyle(offsetFrom, this.state.upperBound - offsetTo),
-          onClick: () => this.props.onBarClick(self['bar' + i], i)
+          onClick: function () { this.props.onBarClick(self['bar' + i], i) }
         }, [this.props.barIcons[i]])
       );
     },
