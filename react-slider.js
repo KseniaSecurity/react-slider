@@ -222,7 +222,7 @@
         disabled: false,
         snapDragDisabled: false,
         invert: false,
-        onBarClick: () => { },
+        onBarClick: function() {},
         unitOfMeasure: '',
         barIcons: []
       };
