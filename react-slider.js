@@ -839,7 +839,7 @@
           },
           className: (this.props.barClassName + ' ' + this.props.barClassName + '-' + i + ' ' + this.props.barAdditionalClasses[i] || '').trim(),
           style: this._buildBarStyle(offsetFrom, this.state.upperBound - offsetTo),
-          onClick: function () { this.props.onBarClick(self['bar' + i], i) }
+          onClick: function () { self.props.onBarClick(self['bar' + i], i) }
         }, [this.props.barIcons[i]])
       );
     },
